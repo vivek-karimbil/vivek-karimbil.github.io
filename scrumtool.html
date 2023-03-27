@@ -696,7 +696,7 @@
             <div id="data">{"name":"[Not Set]"}</div>
         </div>
     </div>
-</template>s
+</template>
 
 <template id="estimateTemplate">
     <input type="radio" name="size" class="teamData" value="1" id="dust"/>
@@ -2700,16 +2700,37 @@
                             }
                             var rqt = dragdrop.add("workItem", document.querySelector("#backlogDiv #requirements"), event);
                             var origId = rqt.id;
-                            rqt.id = id;
-                            rqt.style.backgroundColor = rqtData.noteColor;
-                            rqt.querySelector(".itemName").style.color = rqtData.textColor;
-                            rqt.querySelector(".itemName").innerText = rqtData.name;
-                            rqt.querySelector("#data").innerText = JSON.stringify(rqtData);
-                            var summary = document.querySelector("#backlog #list #" + origId + " div.summary");
+                            document.querySelectorAll("#backlogDiv #" + rqt.id).forEach(r => {
+                                r.id = id;
+                                r.style.backgroundColor = rqtData.noteColor;
+                                var itemName = r.querySelector(".itemName");
+                                if (itemName == null) itemName = r.querySelector(".summary");
+                                itemName.style.color = rqtData.textColor;
+                                itemName.innerText = rqtData.name;
+                                r.querySelector("#data").innerText = JSON.stringify(rqtData);
+                            })
+                            const priorities = project.ui.priorities();
+                            document.querySelectorAll("#backlogDiv #priorities .reqt.backlogitem")
+                                .forEach(r => {
+                                    const data = getJSONData(r);
+                                    priorities.filter(p => data[p] &&
+                                        document
+                                            .querySelector("#backlogDiv #priorities #" + p)
+                                            .appendChild(r));
+                                });
+                            const sizes = project.ui.sizes();
+                            document.querySelectorAll("#backlogDiv #sizes .reqt.backlogitem")
+                                .forEach(r => {
+                                    const data = getJSONData(r);
+                                    sizes.filter(s => data[s] &&
+                                        document
+                                            .querySelector("#backlogDiv #sizes #" + s)
+                                            .appendChild(r));
+                                });
+                            var summary = document.querySelector("#backlog #list #" + id + " div.summary");
                             summary.innerText = rqtData.name;
                             summary.style.color = rqtData.textColor;
                             summary.closest(".reqt").style.backgroundColor = rqtData.noteColor;
-                            document.querySelector("#backlog #list #" + origId).id = id;
                         }
                         for (var i in data.defaults) {
                             if (i != "sizes") {
