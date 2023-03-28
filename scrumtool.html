@@ -1,8 +1,11 @@
+<head>
 <meta http-equiv='cache-control' content='no-cache'> 
 <meta http-equiv='expires' content='0'> 
 <meta http-equiv='pragma' content='no-cache'>
-
+<meta http-equiv="Permissions-Policy" content="interest-cohort=()">
 <link rel="stylesheet" href="scrumtool.css">
+</head>
+
 
 <div style="min-width: 900px;">
     <button id="backlog" class="topmenu" title="Edit project backlog">
@@ -2372,6 +2375,7 @@
             clear: function() {
                 document.querySelectorAll("#projectInfo input").forEach(f => f.value = "");
                 document.querySelector("#backlogScreen #requirements").innerHTML = "";
+                document.querySelectorAll("#backlogScreen .reqt.backlogitem").forEach(w => w.parentNode.removeChild(w));
                 document.querySelectorAll(".droplist:not(.weekdays)").forEach(d => d.innerHTML = "");
                 document.querySelectorAll(".weeksetup #week .item").forEach(w => w.parentNode.removeChild(w));
                 document.querySelector("#mslist #sprints").innerHTML = "";
