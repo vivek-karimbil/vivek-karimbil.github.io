@@ -1,6 +1,25 @@
 <!DOCTYPE html>
+<head><link rel="stylesheet" href="scrumtool.css"></head>
 <html>
-    <body>
+    <body style="background-color: white;">
+        <style>
+            h2 {
+                border-top: 3px solid black;
+            }
+            h3 {
+                border-top: 2px solid black;
+            }
+            h4 {
+                border-top: 1px solid black;
+            }
+            h2, h3, h4 {
+                padding-top: 10px;
+            }
+            #weekDiv img {
+                max-height: 60px;
+                max-width: 80px;
+            }
+        </style>
         <img src="docs/sprinter.jpg"/>
         <h1>Sprinter - Lightweight Sprint Management</h1>
         <div>
@@ -24,6 +43,13 @@
             the tool is designed to support the practise used rather than imposing anything.
         </div>
 
+        <h2>Interactive sample</h2>
+        <div>
+            <a href="scrumtool-doc.html" target="_new">Click here</a> to see how the tool looks like in usage, with inline notes
+            to explain the usage of each part of the tool. The usage of each part of the tool with dummy data helps see how to use the
+            tool and what it looks like at runtime.
+        </div>
+
         <h2>Running the tool</h2>
         <div>
             This tool can be used <a href="scrumtool.html">directly in your browser</a>, or downloaded and run locally, as preferred.
@@ -31,6 +57,398 @@
             <a href="https://d3js.org/">D3JS</a> for rendering graphs, which would require an internet connection when used locally.
             Depending on your browser cache, even that is often not required.
         </div>
+        <div>
+            The workflow is not rigid, allowing for data entry at any point of time in any part of the tool. The philosophy is that
+            you probably have better ways to spend your time than weird data entry into a tool like this. But id does do a reasonable
+            job when used as described here. At the top, the tool allows the choice of tabs:
+            <div style="min-width: 900px;margin-top: 1ch;">
+                <button id="backlog" class="topmenu topmenu-selected" title="Edit project backlog">
+                    <img class="menuButton undraggable" src="img/backlog.svg">
+                </button>
+                <button id="settings" class="topmenu" title="Settings to edit project">
+                    <img class="menuButton undraggable" src="img/settings.svg">
+                </button>
+                <button id="schedule" class="topmenu" data-init="project.ui.refresh" title="Edit progress of work">
+                    <img class="menuButton undraggable" src="img/schedule.svg">
+                </button>
+                <button id="graphs" class="topmenu" title="See progress graphs" data-init="graph.refresh">
+                    <img class="menuButton undraggable" src="img/graph.svg">
+                </button>
+                <button id="dordod" class="topmenu" title="Definition Of Ready / Done criteria">
+                    <img class="menuButton undraggable" src="img/checklists.svg">
+                </button>
+            </div>
+        </div>
+        <div>
+            The tabs on the right of the screen are to save the project and to access help. Saving creates a local file named
+            &lt;project&gt;.json, at the location specific to your browser. The help button opens the live help page in a new
+            browser window. It works even in this screen, to show the parts of the tool in a fictitious project.
+        </div>
+        <div style="padding: 10px; display: inline-block; width: 50%; background-color: gainsboro;">
+            <div style="display: inline; float: right;">
+                <button id="savefile" class="inlineButton" style="vertical-align: unset; float: unset;" title="Save project to local file">
+                    <img class="menuButton undraggable" src="img/savefile.svg">
+                </button>
+                <a href="scrumtool-doc.html" target="_new">
+                    <img id="help" class="menuButton undraggable" src="img/questionmark.svg">
+                </a>
+            </div>
+        </div>
+        <div>
+            Save often to keep edits safe from changing the window or closing the browser unintentionally. This may create
+            multiple files in your browsers directory for file downloads if you use the same file name. 
+        </div>
+
+        <h3>
+            <button id="backlog" class="topmenu topmenu-selected" title="Edit project backlog">
+                <img class="menuButton undraggable" src="img/backlog.svg">
+            </button>
+            Backlog entry
+        </h3>
+        <div>
+            The backlog tab is for creating requirements for a project. It contains three views of the requirements. The
+            default view is for creating backlog items. It is used like a whiteboard on which notes can be stuck, and arranged
+            by dragging them around. There are three views supported for this. There is the default whiteboard that come up
+            on selecting the tab, and you can switch to the other views as described further.
+        </div>
+        <div style="display: inline-block; padding: 10px; background-color: gainsboro; width: 50%;">
+            <div id="views" style="float: right;">
+                <img class="undraggable" src="img/estimate.svg" title="Set size estimates for backlog in bulk"
+                style="height: 75px; vertical-align: top;">
+                <img class="undraggable" src="img/priority.svg" title="Set priority for backlog in bulk"
+                style="height: 75px; vertical-align: top;">
+                <img class="undraggable selected" src="img/backlog.svg" title="Edit backlog items"
+                style="height: 75px; vertical-align: top;">
+            </div>
+        </div>
+
+        <h4>
+            <div id="backlog" class="backlog tray" style="background-color: beige; display: inline-block;">
+                <div class="item task level1" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color:#ffd700;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this" draggable="false">
+                        </span>
+                    </div>
+                </div>
+                <div class="item task level2" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color:#ff69b4;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this" draggable="false">
+                        </span>
+                    </div>
+                </div>
+                <div class="item task level3" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color: #8e67c2;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this" draggable="false">
+                        </span>
+                    </div>
+                </div>
+                <div class="item task level4" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color:#9bee9b;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this" draggable="false">
+                        </span>
+                    </div>
+                </div>
+                <div class="item task level5" title="Drag and drop requirement to board below. Colours just for display.">
+                    <div style="background-color: #847576;" class="postIt" draggable="true">
+                        <span style="float: left; padding: 3px;">
+                            <img class="hand" src="img/dragable.svg" title="Drag this" draggable="false">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            Creating backlog
+        </h4>
+        <div>
+            The collored rectangles above stay in the same place as the screen is scrolled. They may be dragged and dropped
+            to the area below, which gets highlighted on clicking and holding the mouse button down on a rectangle.
+            The colors have no semantic meaning. Any convention may be observed to use colors to group related notes
+            together.
+        </div>
+
+        <h3>
+            <button id="settings" class="topmenu topmenu-selected" title="Settings to edit project">
+                <img class="menuButton undraggable" src="img/settings.svg">
+            </button>
+            Project configuration
+        </h3>
+        <div>
+            The project configuration tab is for settup up parameters to run the project. The first icon, 
+            <img src="img/readfile.svg" style="width: 30px;"/>, is to read a project file. The project name is used with the current
+            time as the default to save the project. The Chrome browser on Windows will append a number to the filename to prevent
+            overwriting an existing file, so beware of browser specific behaviour. The start date of the project is the only date that
+            needs to be provided, and the remaining dates in the project are calculated as offsets from that date.
+        </div>
+        <div>
+            <div id="projectInfo">
+                <button id="loadfile" class="inlineButton" title="Load saved project file"><img class="menuButton undraggable" src="img/readfile.svg"></button>
+                <label for="projectName">Project name:</label>
+                <input type="text" id="projectName" name="projectName" title="Name of project - used while saving">
+                <label for="startDate" style="margin-left: 20px;">Start:</label>
+                <input type="date" id="startDate" class="monday" name="startDate" title="Start date of project - use a Monday" onchange="project.ui.sprint.syncTabs()">
+            </div>
+        </div>
+        <div>
+            The remaining screen below the project name and start date are to configure the team members, sprints, blackout weeks,
+            tracking dates and miscellaneous defaults.
+        </div>
+        <div>
+            The team section is to add developers, testers and leads to the project. The difference between developers and leads is
+            in the default capacity assumption. The explanation of the miscellaneous defaullts covers this aspect.
+        </div>
+        <div style="margin: 10px 0 10px;">
+            <div id="teamDiv">
+                <div id="people" class="projectComponent">
+                    <div id="developer" class="item person" draggable="true" title="Drag to box below to add a developer to the team">
+                        <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                        <img class="menuicon" src="img/developer.svg" draggable="false" style="height: 60px;">
+                    </div>
+                    <div id="lead" class="item person" draggable="true" title="Drag to box below to add a tech lead to the team">
+                        <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                        <img class="menuicon" src="img/lead.svg" draggable="false" style="height: 60px;">
+                    </div>
+                    <div id="tester" class="item person" draggable="true" title="Drag to box below to add a tester to the team">
+                        <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                        <img class="menuicon" src="img/tester.svg" draggable="false" style="height: 60px;">
+                    </div>
+                </div>
+                <div id="team" class="dropzone droplist people" title="Drag team members here from above"
+                style="width: 50%;"></div>
+            </div>
+        </div>
+        <div>
+            Development and testing sprints are in the section below.
+        </div>
+        <div style="display: inline-block; padding-top: 10px; width: 50%;">
+            <div class="leftDiv" style="width: 60%;">
+                <div id="msTypes" class="projectComponent">
+                    <div id="development" class="item newSprint" draggable="true" title="Drag to box below to add a development sprint. (Order according to time)">
+                        <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                        <img class="menuicon" src="img/devsprint.svg" draggable="false" style="height: 60px;">
+                    </div>
+                    <div id="testing" class="item newSprint" draggable="true" title="Drag to box below to add a non-burndown sprint (testing, investigation, ... Order according to time)">
+                        <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                        <img class="menuicon" src="img/qasprint.svg" draggable="false" style="height: 60px;";">
+                    </div>
+                </div>
+                <div id="sprints" class="dropzone droplist schedule" title="Drag sprints here from above"
+                style="min-width: unset; width: 60%;"></div>
+            </div>
+        </div>
+        <div>
+            Weeks in which no work or very little work is likely are marked as blackout weeks. These are used to allocate non
+            working time to all developers during that window, independantly of movement in sprint boundary dates. It saves the
+            effort to manually edit this information for each developer.
+        </div>
+        <div style="display: inline-block; padding-top: 10px; width: 50%;">
+            <div class="rightDiv" style="float: right; width: 40%;">
+                <div id="blackouts" class="projectComponent" title="Drag below to add weeks where no burndown is likely (Diwali, Christmas, company events, training...)">
+                    <div id="blackoutImg" class="item blackout" draggable="true">
+                        <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                        <img class="menuicon" src="img/blackout.svg" draggable="false" style="height: 60px;">
+                    </div>
+                </div>
+                <div id="holidayWeeks" class="dropzone droplist holidayWeeks" title="Drag black out weeks here from above"></div>
+            </div>
+        </div>
+        <div>
+            The tracking schedule sets up which days of the week are to be displayed in the forms that record burnndown, and are
+            displayed on the graphs.
+        </div>
+        <div style="display: inline-block; padding-top: 10px; width: 50%;">
+            <div id="weekDiv" class="leftDiv">
+                <div class="weeksetup">
+                    <div id="daytypes" class="projectComponent" style="height: 64px">
+                        <div id="workday" class="item daytype workday" draggable="true" title="Drag below to set weekly project tracking days">
+                            <img class="hand" src="img/dragable.svg" draggable="false">
+                            <img class="menuicon" src="img/workday.svg" draggable="false">
+                        </div>
+                        <div id="holiday" class="item daytype holiday" draggable="true" title="Drag below to set weekly day off">
+                            <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                            <img class="menuicon" src="img/holiday.svg" draggable="false">
+                        </div>
+                    </div>
+                    <div id="week" class="dropzone weekdays">
+                        <table style="width: 100%; table-layout: fixed; min-height: 106px;"><tbody><tr>
+                            <td id="d1" class="weekday" data-value="1"><div class="dow">Mon</div>
+                                <div class="item dropzone dayOfWeek" id="d1_1680196060129" draggable="true" style="display: inline-block;">
+                                    <div class="icons">
+                                        <div id="itemImage" class="control"><div id="workday" class="item daytype workday" draggable="false" title="">
+                                                <img class="hand" src="img/dragable.svg" draggable="false">
+                                                <img class="menuicon" src="img/workday.svg" draggable="false">
+                                            </div></div>
+                                        <div class="controls">
+                                            
+                                            <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false" title="Delete">
+                                        </div>
+                                    </div>
+                                    <div id="data">{"name":"[Not Set]"}</div>
+                                </div>
+                            </td>
+                            <td id="d2" class="weekday" data-value="2"><div class="dow">Tue</div></td>
+                            <td id="d3" class="weekday" data-value="3" style=""><div class="dow">Wed</div>
+                                <div class="item dropzone dayOfWeek" id="d3_1680196060132" draggable="true" style="display: inline-block;">
+                                    <div class="icons">
+                                        <div id="itemImage" class="control"><div id="workday" class="item daytype workday" draggable="false" title="">
+                                                <img class="hand" src="img/dragable.svg" draggable="false">
+                                                <img class="menuicon" src="img/workday.svg" draggable="false">
+                                            </div></div>
+                                        <div class="controls">
+                                            
+                                            <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false" title="Delete">
+                                        </div>
+                                    </div>
+                                    <div id="data">{"name":"[Not Set]"}</div>
+                                </div>
+                            </td>
+                            <td id="d4" class="weekday" data-value="4"><div class="dow">Thu</div></td>
+                            <td id="d5" class="weekday" data-value="5"><div class="dow">Fri</div>
+                                <div class="item dropzone dayOfWeek" id="d5_1680196060135" draggable="true" style="display: inline-block;">
+                                    <div class="icons">
+                                        <div id="itemImage" class="control"><div id="workday" class="item daytype workday" draggable="false" title="">
+                                                <img class="hand" src="img/dragable.svg" draggable="false">
+                                                <img class="menuicon" src="img/workday.svg" draggable="false">
+                                            </div></div>
+                                        <div class="controls">
+                                            
+                                            <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false" title="Delete">
+                                        </div>
+                                    </div>
+                                    <div id="data">{"name":"[Not Set]"}</div>
+                                </div>
+                            </td>
+                            <td id="d6" class="weekday" data-value="6"><div class="dow">Sat</div>
+                                <div class="item dropzone dayOfWeek" id="d6_1680196060137" draggable="true" style="display: inline-block;">
+                                    <div class="icons">
+                                        <div id="itemImage" class="control"><div id="holiday" class="item daytype holiday" draggable="false" title="">
+                                                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                                                <img class="menuicon" src="img/holiday.svg" draggable="false">
+                                            </div></div>
+                                        <div class="controls">
+                                            
+                                            <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false" title="Delete">
+                                        </div>
+                                        
+                                    </div>
+                                    <div id="data">{"name":"[Not Set]"}</div>
+                                </div>
+                            </td>
+                            <td id="d0" class="weekday" data-value="0"><div class="dow">Sun</div>
+                                <div class="item dropzone dayOfWeek" id="d0_1680196060139" draggable="true" style="display: inline-block;">
+                                    <div class="icons">
+                                        <div id="itemImage" class="control"><div id="holiday" class="item daytype holiday" draggable="false" title="">
+                                                <img class="hand" src="img/dragable.svg" draggable="false" title="Drag this">
+                                                <img class="menuicon" src="img/holiday.svg" draggable="false">
+                                            </div></div>
+                                        <div class="controls">
+                                            
+                                            <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false" title="Delete">
+                                        </div>
+                    
+                                    </div>
+                                    <div id="data">{"name":"[Not Set]"}</div>
+                                </div>
+                            </td>
+                        </tr></tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            The last section contains defaults for creating developers or leads, new tasks and schdulling.
+        </div>
+        <div style="display: inline-block; padding-top: 10px;">
+            <div class="rightDiv">
+                <div id="blackouts" class="projectComponent" style="height: 64px">
+                    <div class="item" title="Project defaults">
+                        <img class="menuIcon undraggable" src="img/edit.svg" style="height: 40px; margin-bottom: 10px; margin-top: 10px;" title="Edit dates">
+                    </div>
+                </div>    
+                <div id="defaults">
+                    <table style="width: 100%; border-collapse: collapse; border: 2px solid #666;">
+                        <tbody><tr class="parameters">
+                            <td class="capacitySetting" colspan="2" style="border-bottom: 3px solid #666; border-right: 3px solid #666;">
+                                <table>
+                                    <tbody><tr>
+                                        <td>
+                                            <img class="rowLabel undraggable" src="img/capacity.svg" title="Default capacity for development">
+                                        </td>
+                                        <td class="capacitySetting" title="Team member in lead role">
+                                            <img class="undraggable rowLabel" src="img/lead.svg" style="background-color: unset;">
+                                            <input id="lead" class="default" value="40" style="text-align: right; width: 4ch;" data-path="defaults.capacity.lead" title="Default capacity for a lead">%
+                                        </td>
+                                        <td class="capacitySetting" title="Team member in developer role">
+                                            <img class="undraggable rowLabel" src="img/developer.svg" style="background-color: unset;">
+                                            <input id="developer" class="default" value="80" style="text-align: right; width: 4ch;" data-path="defaults.capacity.developer" title="Default capacity for a developer">%
+                                        </td>        
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                            <td class="capacitySetting" style="border-bottom: 3px solid #666;">
+                                <img src="img/estimate.svg" class="rowLabel undraggable" style="margin: 2px;" title="Default estimate">
+                                <div id="sizeSettings" class="item" onclick="project.ui.defaultSizes()" style="display: inline;">
+                                    <img src="img/spanner.svg" style="height: 45px; width: 75px;" title="Defaut time estimate in days for chosen size">
+                                    <div id="data"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="capacity">
+                            <td class="capacitySetting" style="border-right: 3px solid #666;">
+                                <img class="rowLabel undraggable" style="margin: 2px;" src="img/holiday.svg" title="Time off per sprint">
+                                <input id="vacation" class="default" value="1" style="text-align: right; width: 5ch;" data-path="defaults.capacity.vacation" title="Unavailable days per sprint">&nbsp;/&nbsp;<img src="img/devsprint.svg" style="width: 50px;">
+                            </td>
+                            <td class="capacitySetting" style="border-right: 3px solid #666;">
+                                <img class="rowLabel undraggable" style="margin: 2px;" src="img/priority.svg" title="Default story priority">
+                                <select name="priority" id="priority" class="default" onchange="defaults.setPriority()"><option id="musthave">Must have</option><option id="shouldhave">Should have</option><option id="nicetohave">Nice to have</option><option id="optional">Optional</option></select>
+                            </td>
+                            <td class="capacitySetting">
+                                <img class="rowLabel undraggable" style="margin: 2px;" src="img/measure.svg" title="Default story size in days">
+                                <select name="size" id="size" class="default" onchange="defaults.setSize()"><option id="dust">Dust</option><option id="grain">Grain</option><option id="pebble">Pebble</option><option id="stone">Stone</option><option id="rock">Rock</option><option id="boulder">Boulder</option><option id="mountain">Mountain</option></select>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <h3>
+            <button id="schedule" class="topmenu topmenu-selected" data-init="project.ui.refresh" title="Edit progress of work">
+                <img class="menuButton undraggable" src="img/schedule.svg">
+            </button>
+            Monitoring progress
+        </h3>
+        <div>
+            The monitoring screen is to plan and steer execution of development work. It provides a project view and a sprint view.
+            The project view displays the project as a table of sprints per row, with the backlog list on the left. The items in the
+            backlog can be dragged to the sprint in which they will be developed.
+        </div>
+        <div>
+            Coming tomorrow
+        </div>
+
+        <h3>
+            <button id="graphs" class="topmenu topmenu-selected" title="See progress graphs" data-init="graph.refresh">
+                <img class="menuButton undraggable" src="img/graph.svg">
+            </button>
+            Status graphs
+        </h3>
+        <div>
+            Coming tomorrow
+        </div>
+
+        <h3>
+            <button id="dordod" class="topmenu topmenu-selected" title="Definition Of Ready / Done criteria">
+                <img class="menuButton undraggable" src="img/checklists.svg">
+            </button>
+            Checklists
+        </h3>
+        <div>
+            Coming tomorrow
+        </div>
+
 
         <h2>Usage</h2>
         <div>
@@ -41,7 +459,7 @@
             are almost no checks on data entry.
         </div>
 
-        <h3>Data</h3>
+        <h2>Data</h2>
         <div>
             A project can be saved locally and loaded from a previosly saved version. The format for the saved file is JSON - which
             makes for an extension point or interface to other tools for reporting, governance and even project management itself.
