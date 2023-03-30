@@ -1,1 +1,51 @@
-Welcome to the <a href="scrumtool.html">Sprinter</a> page!
+<!DOCTYPE html>
+<html>
+    <body>
+        <img src="docs/sprinter.jpg"/>
+        <h1>Sprinter - Lightweight Sprint Management</h1>
+        <div>
+            Welcome to the <a href="scrumtool.html">Sprinter</a> page! This is a tool for you to run your scrum project. It 
+            can be used on your browser directly from the <a href="scrumtool.html">link</a>, and if you prefer, it may be copied
+            from <a href="https://github.com/vivek-karimbil/scrumtool-2.git">Github</a>.
+        </div>
+
+        <h2>Introduction</h2>
+        <div>
+            So why another tool to manage a sprint development project? Excuse the lack of formality and rigour, but while sprint was
+            originally supposed to be a light way for teams to deliver software, the pressures of enterprise adoption, training a
+            rapidly turning over workforce as well as several other reasons have made it hard for larger teams to benefit from
+            agile processes. A tool that can front the visibiity of the project to the team and to management using a simple view,
+            yet can be coupled with a powerful industry strength tool when needed would help this. In addition, the variance in
+            adoption of agile processes needs support without rigidity.
+        </div>
+        <div>
+            This tool does not impose workflows or checks based on a standard, rather than pernitting data to be entered when available
+            and providing defaults if not evailable. It recognises that development is often an aynchronous set of activities, and so
+            the tool is designed to support the practise used rather than imposing anything.
+        </div>
+
+        <h2>Running the tool</h2>
+        <div>
+            This tool can be used <a href="scrumtool.html">directly in your browser</a>, or downloaded and run locally, as preferred.
+            The data entered is saved on your computer, so there is no host connection required. The only external dependancy is on
+            <a href="https://d3js.org/">D3JS</a> for rendering graphs, which would require an internet connection when used locally.
+            Depending on your browser cache, even that is often not required.
+        </div>
+
+        <h2>Usage</h2>
+        <div>
+            This version of the tool is for usage by an individual, loading or saving data locally when required. Saving a project
+            and passing the file to the next user is possible, but without out-of-the-box ability to merge such work with changes
+            made elsewhere.
+            The tool does not impose a workflow, which make it possible to enter data for whatever the team is doing at any time. There
+            are almost no checks on data entry.
+        </div>
+
+        <h3>Data</h3>
+        <div>
+            A project can be saved locally and loaded from a previosly saved version. The format for the saved file is JSON - which
+            makes for an extension point or interface to other tools for reporting, governance and even project management itself.
+        </div>
+
+    </body>
+</html>
