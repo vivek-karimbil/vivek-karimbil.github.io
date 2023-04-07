@@ -363,8 +363,8 @@
             <div class="icons">
                 <div id="itemImage" class="control"></div>
                 <div class="controls">
-                    <img class="edit" src="img/edit.svg" style="width: 100%" draggable="false" title="Edit details">
                     <img class="delete" src="img/delete.svg" style="width: 100%" draggable="false" title="Delete">
+                    <img class="edit" src="img/edit.svg" style="width: 100%" draggable="false" title="Edit details">
                 </div>
                 <div class="itemName"></div>
             </div>
@@ -2395,7 +2395,6 @@
             priorities: function() {
                 return [...document.querySelector("#priorityTemplate")
                     .content.querySelectorAll("input")].map(s => s.id);
-
             },
             sprint: {
                 clear: function() {
@@ -3946,7 +3945,8 @@
             callFunction("initForm_" + itemClass, [this.ui, id]);
             var data = getJSONData(item);
             Object.keys(data).filter(d => d != "").forEach(feildname => {
-                var input = this.ui.querySelector("input#" + feildname);
+                var input = this.ui.querySelector("input#" + feildname)
+                    || this.ui.querySelector("textarea#" + feildname);
                 if (!input) {
                     console.log("Warning: node input#" + feildname, "not found");
                     return;
